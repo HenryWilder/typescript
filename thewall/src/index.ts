@@ -77,6 +77,13 @@ catch (error) {
     console.error(error);
 }
 
+// Enums
+enum StateEnum {
+    inactive,
+    hibernating,
+    active,
+}
+
 // Arrays
 const keyList: string[] = [
     'a',
@@ -86,13 +93,6 @@ const keyList: string[] = [
     'k',
     'n',
 ];
-
-// Enums
-enum StateEnum {
-    inactive,
-    hibernating,
-    active,
-}
 const valueList: StateEnum[] = [
     StateEnum.inactive,
     StateEnum.inactive,
