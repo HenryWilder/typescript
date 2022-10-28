@@ -3,11 +3,11 @@ import path from "path";
 import fs from "fs";
 
 // Classes
-class IVec3 {
+class Vec3 {
     // Properties
-    x: number;
-    y: number;
-    z: number;
+    public x: number;
+    public y: number;
+    public z: number;
     
     // Getters
     public get data() : Array<number> {
@@ -22,43 +22,43 @@ class IVec3 {
     }
     
     // Constructors
-    constructor(x: number, y: number, z: number) {
+    public constructor(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     // Methods
-    toString = () => `(${this.x}, ${this.y}, ${this.z})`;
+    public toString = () => `(${this.x}, ${this.y}, ${this.z})`;
 
     // Math operations
-    add = (x: number, y: number, z: number) => new IVec3(this.x + x, this.y + y, this.z + z);
-    sub = (x: number, y: number, z: number) => new IVec3(this.x - x, this.y - y, this.z - z);
-    mul = (x: number, y: number, z: number) => new IVec3(this.x * x, this.y * y, this.z * z);
-    div = (x: number, y: number, z: number) => new IVec3(this.x / x, this.y / y, this.z / z);
+    public add = (x: number, y: number, z: number) => new Vec3(this.x + x, this.y + y, this.z + z);
+    public sub = (x: number, y: number, z: number) => new Vec3(this.x - x, this.y - y, this.z - z);
+    public mul = (x: number, y: number, z: number) => new Vec3(this.x * x, this.y * y, this.z * z);
+    public div = (x: number, y: number, z: number) => new Vec3(this.x / x, this.y / y, this.z / z);
 
     // Vector operations
-    addV = (vec: IVec3) => this.add(vec.x, vec.y, vec.z);
-    subV = (vec: IVec3) => this.sub(vec.x, vec.y, vec.z);
-    mulV = (vec: IVec3) => this.mul(vec.x, vec.y, vec.z);
-    divV = (vec: IVec3) => this.div(vec.x, vec.y, vec.z);
+    public addV = (vec: Vec3) => this.add(vec.x, vec.y, vec.z);
+    public subV = (vec: Vec3) => this.sub(vec.x, vec.y, vec.z);
+    public mulV = (vec: Vec3) => this.mul(vec.x, vec.y, vec.z);
+    public divV = (vec: Vec3) => this.div(vec.x, vec.y, vec.z);
 
     // Scalar operations
-    addS = (scale: number) => this.add(scale, scale, scale);
-    subS = (scale: number) => this.sub(scale, scale, scale);
-    mulS = (scale: number) => this.mul(scale, scale, scale);
-    divS = (scale: number) => this.div(scale, scale, scale);
+    public addS = (scale: number) => this.add(scale, scale, scale);
+    public subS = (scale: number) => this.sub(scale, scale, scale);
+    public mulS = (scale: number) => this.mul(scale, scale, scale);
+    public divS = (scale: number) => this.div(scale, scale, scale);
 }
 
 // Interfaces
 interface IBody {
     radius: number;
-    startPos: IVec3;
+    startPos: Vec3;
 }
 
 // Loading objects from files
 const bodiesFilePath: string = path.resolve("./src/config/bodies.json");
-const bodies: Array<IBody> = JSON.parse(fs.readFileSync(bodiesFilePath,"utf8"));
+const bodies: IBody[] = JSON.parse(fs.readFileSync(bodiesFilePath,"utf8"));
 
 // Functions
 const bodyRadius = (bodyIndex: number) => {
@@ -70,4 +70,79 @@ const bodyPosition = (bodyIndex: number) => {
 
 // Writing to console
 // Strings with inline evaluation
-console.log(`Radius: ${bodyRadius(0)}, Position: ${bodyPosition(0).add(0,1,0)}`);
+try {
+    console.log(`Radius: ${bodyRadius(0)}, Position: ${bodyPosition(0).add(0,0,0).toString()}`);
+}
+catch (error) {
+    console.error(error);
+}
+
+// Arrays
+const keyList: string[] = [
+    'a',
+    'b',
+    'z',
+    'd',
+    'k',
+    'n',
+];
+
+// Enums
+enum StateEnum {
+    inactive,
+    hibernating,
+    active,
+}
+const valueList: StateEnum[] = [
+    StateEnum.inactive,
+    StateEnum.inactive,
+    StateEnum.active,
+    StateEnum.hibernating,
+    StateEnum.active,
+    StateEnum.active,
+];
+
+// (I know I could be using a map instead of a pair of arrays, I just wanna show that it can also work without one)
+
+const keyLookupListString: string = "a,b,k,@hibernating,n";
+const initialValue = Array(Object.values(StateEnum).length >> 1).fill(0);
+const stateAggregates: number[] = keyLookupListString.split(',').reduce((accumulation: number[], key: string) => {
+    // Exception handling
+    try {
+        if (key.length == 0)
+            throw new Error("Key has no length");
+
+        let state: StateEnum;
+
+        // Enum reference
+        if (key.startsWith('@')) {
+            const stateName: string = key.substring(1);
+
+            if (!Object.values(StateEnum).includes(stateName))
+                throw new Error(`State ${stateName} is not a valid state enum.`);
+
+            state = StateEnum[stateName as keyof typeof StateEnum];
+        }
+
+        // Lookup key
+        else {
+            const keyIndex = keyList.indexOf(key);
+
+            if (keyIndex === -1)
+                throw new Error(`"${key}" is not a valid key.`);
+
+            state = valueList[keyIndex];
+        }
+
+        accumulation[state]++;
+    }
+    catch (error) {
+        console.warn(error);
+    }
+    finally {
+        return accumulation;
+    }
+}, initialValue);
+
+console.log("Status aggregates:");
+stateAggregates.forEach((value, index) => console.log(`${value} ${StateEnum[index]}`));
