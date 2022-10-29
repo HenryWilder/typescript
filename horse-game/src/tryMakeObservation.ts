@@ -72,23 +72,15 @@ export const tryMakeObservation = (horses: IHorse[], horsePositions: number[]) =
 };
 
 const rank = (activeState: number[]) => {
-    const initialRanking: IRankState = {
-        first: { value: -Infinity, index: -1 },
-        second: { value: 0, index: 0 },
-        last: { value: Infinity, index: -1 }
+    const sorted: IRank[] = activeState
+        .map((position, horseIndex) => ({ value: position, index: horseIndex}))
+        .sort((a, b) => a.value - b.value);
+
+    const rankState: IRankState = {
+        first:  sorted.at(0)  as IRank,
+        second: sorted.at(1)  as IRank,
+        last:   sorted.at(-1) as IRank,
     };
-    const rankState: IRankState = activeState.reduce((running, position, horseIndex) => {
-        if (position > running.first.value) {
-            running.second.value = running.first.value;
-            running.second.index = running.first.index;
-            running.first.value = position;
-            running.first.index = horseIndex;
-        }
-        if (position < running.last.value) {
-            running.last.value = position;
-            running.last.index = horseIndex;
-        }
-        return running;
-    }, initialRanking);
+
     return rankState;
 }
