@@ -2,6 +2,7 @@
 import { StateEnum } from "./util/StateEnum";
 import { logBodyData } from "./util/logBodyData";
 import { logStateAggregates } from "./util/aggregateStates";
+import { logThinglyPotatoness } from "./util/examinationOfPotatoStatus";
 
 (async () => {
     try {
@@ -40,13 +41,8 @@ import { logStateAggregates } from "./util/aggregateStates";
 
         console.log("\nThingly potatoness:");
         try {
-            const isItAPotato = (thing: string) => thing == "potato";
-
-            let allTheThings = ["potato", "not a potato"];
-
-            let thinglyPotatoness = allTheThings.map(isItAPotato);
-
-            allTheThings.forEach((thing, index) => console.log(`"${thing}" ${thinglyPotatoness[index] ? "is" : "is not" } a potato`));
+            let allTheThings = ["potato", "not a potato", "the kitchen sink"];
+            logThinglyPotatoness(allTheThings);
         } catch (error) {
             console.error(error);
         }
