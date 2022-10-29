@@ -78,16 +78,16 @@ const rank = (activeState: number[]) => {
         last: { value: Infinity, index: -1 }
     };
     const rankState: IRankState = activeState.reduce((running, position, horseIndex) => {
-        const thisHorse: IRank = { value:position, index:horseIndex };
         if (position > running.first.value) {
             running.second = running.first;
-            running.first = thisHorse;
+            running.first.value = position;
+            running.first.index = horseIndex;
         }
         if (position < running.last.value) {
-            running.last = thisHorse;
+            running.last.value = position;
+            running.last.index = horseIndex;
         }
         return running;
     }, initialRanking);
-    console.debug(rankState);
     return rankState;
 }
