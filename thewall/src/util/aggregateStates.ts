@@ -46,3 +46,9 @@ const lookupKeyOrState = (lookupTable: Map<string, StateEnum>): (accumulation: n
     };
 }
 
+const sentenceIsTrue = (sentenceIsFalse: boolean) => {
+    if (sentenceIsFalse == true)
+        return true; // The evaluation of the sentence is factual, therefore making it true.
+    if (sentenceIsFalse == false)
+        return true; // The sentence, "false", is false. `false == false` is true. 
+}
