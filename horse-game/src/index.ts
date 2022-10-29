@@ -31,21 +31,38 @@ const logHorsePositions = (horses: IHorse[], horsePositions: number[]) => {
     console.log(sideLineBot);
 }
 
-(async () => {
-    /** Position of each horse */
-    let horses: IHorse[] = [
-        { name:'Star', symbol:'★' },
-        { name:'Virus', symbol:'❉' },
-        { name:'Diamond', symbol:'✧' },
-        { name:'Snowflake', symbol:'❅' }
-    ];
-    let horsePositions: number[] = Array(horses.length).fill(0);
+let lastState: number[];
+const tryMakeObservation = (horsePositions: number[]) => {
 
-    while (horsePositions.every((horsePos) => horsePos < raceLength)) {
-        console.clear();
-        logHorsePositions(horses, horsePositions);
-        await sleep(50);
-        horsePositions = updateHorsePositions(horsePositions);
+    lastState = horsePositions;
+    return "";
+}
+
+(async () => {
+    try {
+        /** Position of each horse */
+        let horses: IHorse[] = [
+            { name:'Star', symbol:'★' },
+            { name:'Virus', symbol:'❉' },
+            { name:'Diamond', symbol:'✧' },
+            { name:'Snowflake', symbol:'❅' }
+        ];
+        let horsePositions: number[] = Array(horses.length).fill(0);
+        let commentary = ["And the race has started!"];
+
+        while (horsePositions.every((horsePos) => horsePos < raceLength)) {
+            console.clear();
+            logHorsePositions(horses, horsePositions);
+            const latestComment: string = tryMakeObservation(horsePositions);
+            if (latestComment != "")
+                commentary.push(latestComment);
+            commentary.forEach((observation) => console.log(observation));
+            await sleep(100);
+            horsePositions = updateHorsePositions(horsePositions);
+        }
+        console.log(horses[horsePositions.findIndex((pos) => pos >= raceLength)].name + " Wins!!");
     }
-    console.log(horses[horsePositions.findIndex((pos) => pos >= raceLength)].name + " Wins!");
+    catch (error) {
+        console.error(error);
+    }
 })();
