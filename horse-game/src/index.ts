@@ -1,3 +1,5 @@
+import { sleep } from "./util/sleep";
+
 (async () => {
     console.clear();
     console.log("Hello");
