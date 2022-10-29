@@ -1,7 +1,3 @@
-const sleep = (milliseconds: number) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-
 (async () => {
     console.clear();
     console.log("Hello");
