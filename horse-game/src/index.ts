@@ -31,10 +31,13 @@ const logHorsePositions = (horses: IHorse[], horsePositions: number[]) => {
     console.log(sideLineBot);
 }
 
-let lastState: number[];
-const tryMakeObservation = (horsePositions: number[]) => {
+/** A history of the race's statistics */
+let stateLog: Array<number[]> = [];
 
-    lastState = horsePositions;
+/** Tries to make observations about the current state of the race */
+const tryMakeObservation = (horses: IHorse[], horsePositions: number[]) => {
+    stateLog.push(horsePositions);
+    // todo
     return "";
 }
 
@@ -53,7 +56,7 @@ const tryMakeObservation = (horsePositions: number[]) => {
         while (horsePositions.every((horsePos) => horsePos < raceLength)) {
             console.clear();
             logHorsePositions(horses, horsePositions);
-            const latestComment: string = tryMakeObservation(horsePositions);
+            const latestComment: string = tryMakeObservation(horses, horsePositions);
             if (latestComment != "")
                 commentary.push(latestComment);
             commentary.forEach((observation) => console.log(observation));
