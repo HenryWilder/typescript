@@ -2,10 +2,10 @@ import { IHorse } from "./IHorse";
 
 /** Number of columns */
 export const raceLength: number = 100;
-const sideLineTop = `╔══╤${'═'.repeat(raceLength - 1)}╗`;
-const sideLineMid = `╟──┼${'─'.repeat(raceLength - 5)} ▞▞ ╢`;
-const raceTrack   = `║▸ │${' '.repeat(raceLength - 5)} ▞▞ ║`;
-const sideLineBot = `╚══╧${'═'.repeat(raceLength - 1)}╝`;
+const sideLineTop = `╔══╤${'═'.repeat(raceLength)}╗`;
+const sideLineMid = `╟──┼${'─'.repeat(raceLength - 4)} ▞▞ ╢`;
+const raceTrack   = `║▸ │${' '.repeat(raceLength - 4)} ▞▞ ║`;
+const sideLineBot = `╚══╧${'═'.repeat(raceLength)}╝`;
 /** Draws each horse on the command line */
 export const drawRace = (horses: IHorse[], horsePositions: number[]) => {
     console.log(sideLineTop);
