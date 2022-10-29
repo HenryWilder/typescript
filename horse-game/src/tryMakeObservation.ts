@@ -79,7 +79,8 @@ const rank = (activeState: number[]) => {
     };
     const rankState: IRankState = activeState.reduce((running, position, horseIndex) => {
         if (position > running.first.value) {
-            running.second = running.first;
+            running.second.value = running.first.value;
+            running.second.index = running.first.index;
             running.first.value = position;
             running.first.index = horseIndex;
         }
