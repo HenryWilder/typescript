@@ -1,9 +1,13 @@
 import { IHorse } from "./IHorse";
 
 interface IRank {
-    first: number;
-    second: number;
-    last: number;
+    value: number;
+    index: number;
+}
+interface IRankState {
+    first:  IRank;
+    second: IRank;
+    last:   IRank;
 }
 
 let commentary = ["And the race has started!"];
@@ -12,7 +16,7 @@ let commentary = ["And the race has started!"];
 let stateLog: Array<number[]> = [];
 
 /** A history of the race's statistics */
-let rankLog: IRank[] = [];
+let rankLog: IRankState[] = [];
 
 /** Tries to make observations about the current state of the race */
 export const tryMakeObservation = (horses: IHorse[], horsePositions: number[]) => {
@@ -25,18 +29,18 @@ export const tryMakeObservation = (horses: IHorse[], horsePositions: number[]) =
     rankLog.push(currentRank);
 
     if (!!lastRank) {
-        const newFirstPlace:  boolean = currentRank.first  != lastRank.first;
-        const newSecondPlace: boolean = currentRank.second != lastRank.second;
-        const newLastPlace:   boolean = currentRank.last   != lastRank.last;
+        const newFirstPlace:  boolean = currentRank.first.index  != lastRank.first.index;
+        const newSecondPlace: boolean = currentRank.second.index != lastRank.second.index;
+        const newLastPlace:   boolean = currentRank.last.index   != lastRank.last.index;
         newInformation = newFirstPlace || newSecondPlace || newLastPlace;
         if (newInformation) {
             let firstPlacer:  string;
             let secondPlacer: string;
             let lastPlacer:   string;
             try {
-                firstPlacer  = horses[currentRank.first ].name;
-                secondPlacer = horses[currentRank.second].name;
-                lastPlacer   = horses[currentRank.last  ].name;
+                firstPlacer  = horses[currentRank.first.index ].name;
+                secondPlacer = horses[currentRank.second.index].name;
+                lastPlacer   = horses[currentRank.last.index  ].name;
             }
             catch (error) {
                 console.log(currentRank);
@@ -62,31 +66,28 @@ export const tryMakeObservation = (horses: IHorse[], horsePositions: number[]) =
     }
 
     if (newInformation) commentary.push(latestComment);
-    commentary.forEach((comment) => console.log(comment));
+    console.log(commentary.at(-1));
+    //commentary.forEach((comment) => console.log(comment));
     //console.log(commentary.join(' '));
 };
 
 const rank = (activeState: number[]) => {
-    const initialRanking = {
-        firstPlace: { value: -Infinity, horseIndex: -1 },
-        secondPlace: { value: 0, horseIndex: 0 },
-        lastPlace: { value: Infinity, horseIndex: -1 }
+    const initialRanking: IRankState = {
+        first: { value: -Infinity, index: -1 },
+        second: { value: 0, index: 0 },
+        last: { value: Infinity, index: -1 }
     };
-    const currentRanking = activeState.reduce((running, position, index) => {
-        if (position > running.firstPlace.value) {
-            running.secondPlace = running.firstPlace;
-            running.firstPlace.value = position;
-            running.firstPlace.horseIndex = index;
+    const rankState: IRankState = activeState.reduce((running, position, horseIndex) => {
+        const thisHorse: IRank = { value:position, index:horseIndex };
+        if (position > running.first.value) {
+            running.second = running.first;
+            running.first = thisHorse;
         }
-        if (position < running.lastPlace.value) {
-            running.lastPlace.value = position;
-            running.lastPlace.horseIndex = index;
+        if (position < running.last.value) {
+            running.last = thisHorse;
         }
         return running;
     }, initialRanking);
-    return {
-        first: currentRanking.firstPlace.horseIndex,
-        second: currentRanking.secondPlace.horseIndex,
-        last: currentRanking.lastPlace.horseIndex
-    };
+    console.debug(rankState);
+    return rankState;
 }
