@@ -3,8 +3,9 @@ const sleep = (milliseconds: number) => {
 }
 
 (async () => {
-    console.log("\x1b[uHello");
+    console.clear();
+    console.log("Hello");
     await sleep(1000);
     console.clear();
-    console.log("\x1b[uEEEEE");
+    console.log("EEEEE");
 })();
